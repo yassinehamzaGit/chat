@@ -47,6 +47,7 @@ namespace chat
         protected void addConversationTextBox(object sender, EventArgs e)
         {
             this.listBox1.Items.Add("Me: "+sendMessageText.Text);
+            this.sendMessageText.Text = "";
 
         }
 
