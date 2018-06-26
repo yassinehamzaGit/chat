@@ -7,6 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Apis.Services;
+using Google.Apis.Translate.v2;
+using Google.Apis.Translate.v2.Data;
+using TranslationsResource = Google.Apis.Translate.v2.Data.TranslationsResource;
+using Google.Apis.Auth.OAuth2;
+using Google.Cloud.Translation.V2;
+using Nexmo.Api;
+using System.IO;
+using Google.Apis.Util;
+using static Google.Apis.Drive.v3.CommentsResource;
 
 namespace chat
 {
@@ -48,9 +58,32 @@ namespace chat
         {
             this.listBox1.Items.Add("Me: "+sendMessageText.Text);
             this.sendMessageText.Text = "";
+            String credentialsFilePath = "C:\\Users\\yassinehamza\\Downloads\\AutoSim-e21f13837857.json";
+            String nexmoApiKeyPath = "C:\\Users\\yassinehamza\\Downloads\\ApiKey.txt";
+            String apiSecret =System.IO.File.ReadAllText(nexmoApiKeyPath);
+            System.Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", credentialsFilePath);
+            Console.OutputEncoding = System.Text.Encoding.Unicode;
+            TranslationClient client = TranslationClient.Create();
+            var response = client.TranslateText("Where are you ?", "ru");
+            this.listBox1.Items.Add("Me: " + response.TranslatedText);
+            Console.WriteLine(apiSecret);
+            this.listBox1.Items.Add(apiSecret);
+            
+            var client2 = new Client(creds: new Nexmo.Api.Request.Credentials
+            {
+                ApiKey = "6faa305b",
+                ApiSecret = apiSecret
+            });
+            var results = client2.SMS.Send(request: new SMS.SMSRequest
+            {
+                from = "Acme Inc",
+                to = "+4917628837747",
+                text = response.TranslatedText
+            });
+            
 
         }
+       
 
-      
     }
 }
